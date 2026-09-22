@@ -11,7 +11,6 @@ export default function Navbar() {
     logout()
     navigate('/')
   }
-
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-brand-dark/10 px-6 lg:px-8 py-3 flex justify-between items-center sticky top-0 z-40">
       <button
