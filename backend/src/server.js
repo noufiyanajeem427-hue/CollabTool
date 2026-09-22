@@ -1,25 +1,19 @@
-const http = require('http');
-const app = require('./app');
-const config = require('./config/env');
-const connectDB = require('./config/db');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-// Create HTTP server
-const server = http.createServer(app);
+dotenv.config();
 
-// Start Server & Connect Database
-const startServer = async () => {
-  try {
-    // Connect to MongoDB
-    await connectDB();
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-    // Start listening
-    server.listen(config.port, () => {
-      console.log(`🚀 Server is running on http://localhost:${config.port}`);
-    });
-  } catch (err) {
-    console.error(`❌ Failed to start server: ${err.message}`);
-    process.exit(1);
-  }
-};
+app.use(cors());
+app.use(express.json());
 
-startServer();
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
