@@ -1,25 +1,31 @@
-const http = require('http');
-const app = require('./app');
-const config = require('./config/env');
-const connectDB = require('./config/db');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 
-// Create HTTP server
-const server = http.createServer(app);
+const authRoutes = require("./routes/authRoutes");
+const workspaceRoutes = require("./routes/workspaceRoutes");
 
-// Start Server & Connect Database
-const startServer = async () => {
-  try {
-    // Connect to MongoDB
-    await connectDB();
+dotenv.config();
 
-    // Start listening
-    server.listen(config.port, () => {
-      console.log(`🚀 Server is running on http://localhost:${config.port}`);
-    });
-  } catch (err) {
-    console.error(`❌ Failed to start server: ${err.message}`);
-    process.exit(1);
-  }
-};
+connectDB();
 
-startServer();
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "CollabTool backend is running"
+  });
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/workspaces", workspaceRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
